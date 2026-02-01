@@ -82,8 +82,9 @@
         #noBtn {
             background: linear-gradient(135deg, #e0e0e0 0%, #b0b0b0 100%);
             color: #333;
-            position: absolute;
+            position: fixed;
             transition: all 0.1s ease;
+            z-index: 1000;
         }
 
         .hearts {
@@ -163,9 +164,13 @@
 
         let noBtnAttempts = 0;
 
-        // Position No button initially
-        noBtn.style.left = '60%';
-        noBtn.style.top = '0';
+        // Position No button initially next to Yes button
+        function positionNoButtonInitially() {
+            const yesBtnRect = yesBtn.getBoundingClientRect();
+            noBtn.style.left = (yesBtnRect.right + 20) + 'px';
+            noBtn.style.top = yesBtnRect.top + 'px';
+        }
+        positionNoButtonInitially();
 
         // Move No button on hover, click, and touch
         noBtn.addEventListener('mouseenter', moveNoButton);
@@ -177,15 +182,32 @@
             e.stopPropagation();
             noBtnAttempts++;
             
-            const containerRect = buttonsContainer.getBoundingClientRect();
-            const btnRect = noBtn.getBoundingClientRect();
+            const yesBtnRect = yesBtn.getBoundingClientRect();
+            const noBtnRect = noBtn.getBoundingClientRect();
             
-            // Random position within container
-            const maxX = containerRect.width - btnRect.width;
-            const maxY = containerRect.height - btnRect.height;
+            // Get viewport dimensions
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
             
-            const randomX = Math.random() * maxX;
-            const randomY = Math.random() * maxY;
+            // Calculate available space
+            const maxX = viewportWidth - noBtnRect.width - 20;
+            const maxY = viewportHeight - noBtnRect.height - 20;
+            
+            let randomX, randomY;
+            let attempts = 0;
+            
+            // Keep trying until we find a position that doesn't overlap with Yes button
+            do {
+                randomX = Math.random() * maxX + 10;
+                randomY = Math.random() * maxY + 10;
+                attempts++;
+            } while (
+                attempts < 50 && 
+                randomX < yesBtnRect.right + 50 &&
+                randomX + noBtnRect.width > yesBtnRect.left - 50 &&
+                randomY < yesBtnRect.bottom + 50 &&
+                randomY + noBtnRect.height > yesBtnRect.top - 50
+            );
             
             noBtn.style.left = randomX + 'px';
             noBtn.style.top = randomY + 'px';
@@ -214,6 +236,7 @@
             
             // Hide buttons
             buttonsContainer.style.display = 'none';
+            noBtn.style.display = 'none';
             
             // Show celebration message
             message.innerHTML = '<div class="celebration">I can\'t wait to spend Valentine\'s Day with you buby <3 </div>';
