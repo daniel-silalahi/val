@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be My Valentine? 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ffd6e8 0%, #ffb3d9 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(255, 105, 180, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #ff1493;
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.3);
+        }
+
+        .image-container {
+            margin-bottom: 30px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .buttons-container {
+            position: relative;
+            height: 80px;
+            margin-top: 30px;
+        }
+
+        button {
+            font-size: 1.2em;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #yesBtn {
+            background: linear-gradient(135deg, #ff6b9d 0%, #ff1493 100%);
+            color: white;
+            margin-right: 20px;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(255, 20, 147, 0.4);
+        }
+
+        #noBtn {
+            background: linear-gradient(135deg, #e0e0e0 0%, #b0b0b0 100%);
+            color: #333;
+            position: absolute;
+            transition: all 0.1s ease;
+        }
+
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .heart {
+            position: absolute;
+            color: #ff1493;
+            font-size: 30px;
+            animation: float 3s ease-in-out;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .celebration {
+            font-size: 1.3em;
+            color: #ff1493;
+            margin-top: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts"></div>
+    
+    <div class="container">
+        <h1>Will you be my Valentine???</h1>
+        
+        <div class="image-container">
+            <img id="mainImage" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" alt="Valentine's Question">
+        </div>
+
+        <div class="buttons-container">
+            <button id="yesBtn">YES OF COURSE!!!!</button>
+            <button id="noBtn">No</button>
+        </div>
+
+        <div id="message"></div>
+    </div>
+
+    <script>
+        // Load images
+        const image1 = 'indulgexpress_2025-09-17_h1u2agft_get.avif';
+        const image2 = '5bd0abf4bf3cfa3e35466e361e106b8b.jpg';
+        const mainImage = document.getElementById('mainImage');
+        
+        // Set initial image
+        mainImage.src = image1;
+
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const message = document.getElementById('message');
+        const heartsContainer = document.getElementById('hearts');
+        const buttonsContainer = document.querySelector('.buttons-container');
+
+        let noBtnAttempts = 0;
+
+        // Position No button initially
+        noBtn.style.left = '60%';
+        noBtn.style.top = '0';
+
+        // Move No button on hover, click, and touch
+        noBtn.addEventListener('mouseenter', moveNoButton);
+        noBtn.addEventListener('click', moveNoButton);
+        noBtn.addEventListener('touchstart', moveNoButton);
+
+        function moveNoButton(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            noBtnAttempts++;
+            
+            const containerRect = buttonsContainer.getBoundingClientRect();
+            const btnRect = noBtn.getBoundingClientRect();
+            
+            // Random position within container
+            const maxX = containerRect.width - btnRect.width;
+            const maxY = containerRect.height - btnRect.height;
+            
+            const randomX = Math.random() * maxX;
+            const randomY = Math.random() * maxY;
+            
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+
+            // Change button text after 5 attempts
+            if (noBtnAttempts >= 5) {
+                const extraYs = 'Y'.repeat(noBtnAttempts - 4);
+                noBtn.textContent = `WH${extraYs}Y!`;
+            }
+
+            // Make Yes button bigger after attempts
+            if (noBtnAttempts > 3) {
+                yesBtn.style.transform = `scale(${1 + noBtnAttempts * 0.1})`;
+            }
+            
+            return false;
+        }
+
+        // Yes button clicked
+        yesBtn.addEventListener('click', function() {
+            // Change image
+            mainImage.src = image2;
+            
+            // Update heading
+            document.querySelector('h1').textContent = "YAY! I knew you wouldn't press no";
+            
+            // Hide buttons
+            buttonsContainer.style.display = 'none';
+            
+            // Show celebration message
+            message.innerHTML = '<div class="celebration">I can\'t wait to spend Valentine\'s Day with you buby <3 </div>';
+            
+            // Create floating hearts
+            createHearts();
+        });
+
+        function createHearts() {
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.textContent = '❤️';
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.animationDelay = '0s';
+                    heartsContainer.appendChild(heart);
+                    
+                    setTimeout(() => heart.remove(), 3000);
+                }, i * 100);
+            }
+        }
+    </script>
+</body>
+</html>
